@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4D Tensor Example</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+</head>
+<body>
+    <script>
+//    Tensor creation mathods
+
+const tensorData = tf.tensor([[1,2], [3,4]]);
+
+tensorData.print();
+const tensor1dData = tf.tensor1d([1,2,3,4]);
+tensor1dData.print();
+
+const tensor2dData = tf.tensor2d([
+    [1,2,3],
+    [4,5,6]
+]);
+tensor2dData.print();
+
+const tensor3dData = tf.tensor3d([
+    [
+        [1,2],
+        [3,4]
+    ],
+    [
+        [4,5],
+        [6,7]
+    ]
+])
+tensor3dData.print();
+
+const tensor4dData = tf.tensor4d([
+    [
+        [
+            [1,2],[3,4]
+        ],
+        [
+            [1,2],[3,4]
+        ]
+    ],
+    [
+        [
+            [5,6],[7,8]
+        ],
+        [
+            [5,6],[7,8]
+        ]
+    ],
+    [
+        [
+            [9,10],[11,12]
+        ],
+        [
+            [9,10],[11,12]
+        ]
+    ]
+])
+tensor4dData.print();
+
+const tensor2dDataZero = tf.zeros([2, 4]);
+tensor2dDataZero.print();
+
+const tensor3dDataZero = tf.zeros([2,3,4]);
+tensor3dDataZero.print();
+
+const tensor4dDataZero = tf.zeros([2,3,2,3]);
+tensor4dDataZero.print();
+
+
+const tensor2dDataOnce = tf.ones([2,3]);
+tensor2dDataOnce.print();
+
+const tensor3dDataOnce = tf.ones([2,2,3]);
+tensor3dDataOnce.print();
+
+const tensor4dDataOnce = tf.ones([2,2,2,3]);
+tensor4dDataOnce.print();
+
+
+const tensor2dRandomNprmal = tf.randomNormal([2,2], 1,4)
+tensor2dRandomNprmal.print();
+
+const tensor3dRandomNormal = tf.randomNormal([2,2,2], 1,1)
+tensor3dRandomNormal.print();
+
+
+const tensor3dRandomUniform = tf.randomUniform([2,2,2], 1,10)
+tensor3dRandomUniform.print();
+console.log("shape" , tensor3dRandomUniform.shape);
+console.log("shape" , tensor3dRandomUniform.size);
+console.log("shape" , tensor3dRandomUniform.dtype);
+console.log("shape" , tensor3dRandomUniform.rank);
+
+
+const tensor2dDataFill = tf.fill([2,5], 4)
+tensor2dDataFill.print();
+
+
+
+    </script>
+</body>
+</html>
