@@ -100,7 +100,68 @@ console.log("shape" , tensor3dRandomUniform.rank);
 const tensor2dDataFill = tf.fill([2,5], 4)
 tensor2dDataFill.print();
 
+// Operations
 
+const tensorOperation1 = tf.tensor([
+    [
+        [1,2,3],
+        [4,5,6]
+    ],
+    [
+        [2,3,5],
+        [4,6,8]
+    ]
+]);
+
+const tensorOperation2 = tf.tensor([
+    [
+        [4,5,9],
+        [4,7,0]
+    ],
+    [
+        [4,4,4],
+        [4,4,4]
+        
+    ]
+]);
+
+const addResultData = tf.add(tensorOperation1, tensorOperation2);
+console.log("\n ---> add();");
+
+addResultData.print();
+
+const subResultData = tf.sub(tensorOperation1, tensorOperation2);
+console.log("\n ---> sub();");
+subResultData.print();
+
+console.log("\n ---> mul();");
+const multResultData = tf.mul(tensorOperation1, tensorOperation2);
+multResultData.print();
+
+console.log("\n ---> div();");
+const divResultData = tf.div(tensorOperation1, tensorOperation2);
+divResultData.print();
+
+console.log("\n ---> mod();");
+const modResultData = tf.mod(tensorOperation1, tensorOperation2);
+modResultData.print();
+
+console.log("\n ---> neg();");
+const negResultData = tf.neg(tensorOperation1);
+negResultData.print();
+
+console.log("\n ---> sqrt();");
+const sqrtResultData = tf.sqrt(tensorOperation1);
+sqrtResultData.print();
+
+console.log("\n ---> pow();");
+const powDataTensor = tf.tensor([2,3,4])
+const powResultData = powDataTensor.pow(3);
+powResultData.print();
+
+console.log("\n ---> abs();");
+const absResultData = tf.abs(subResultData);
+absResultData.print();
 
     </script>
 </body>
