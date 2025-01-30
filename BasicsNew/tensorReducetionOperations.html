@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+</head>
+<body>
+    <script>
+        const tensorData = tf.tensor([
+            [[[1,2],[3,4]],
+            [[1,2],[3,4]]],
+            [[[1,2],[3,4]],
+            [[1,2],[3,4]]],
+        ])
+
+        const tensorDataArg = tf.tensor([1,3,4,6])
+        tf.sum(tensorData).print();
+
+        tf.mean(tensorData).print();
+
+        tf.prod(tensorData).print();
+
+        tf.min(tensorData).print();
+        tf.max(tensorData).print();
+
+        tf.argMin(tensorDataArg).print();
+        tf.argMax(tensorDataArg).print();
+
+
+    </script>
+</body>
+</html>

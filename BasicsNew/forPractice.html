@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech Recognition with TensorFlow.js</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/speech-commands"></script>
+</head>
+<body>
+    <h1>Speak and See the Recognized Word</h1>
+    <button onclick="startListening()">Start Listening</button>
+    <p id="output">Recognized Word: </p>
+
+    <script>
+        async function loadModel() {
+            const recognizer = speechCommands.create('BROWSER_FFT');
+            await recognizer.ensureModelLoaded();
+            return recognizer;
+        }
+
+        async function startListening() {
+            const recognizer = await loadModel();
+            recognizer.listen(result => {
+                const scores = result.scores;
+                const labels = recognizer.wordLabels();
+                const maxIndex = scores.indexOf(Math.max(...scores));
+                
+                document.getElementById("output").innerText = `Recognized Word: ${labels[maxIndex]}`;
+            }, {
+                probabilityThreshold: 0.75,
+                invokeCallbackOnNoiseAndUnknown: true,
+            });
+
+            setTimeout(() => recognizer.stopListening(), 5000);
+        }
+    </script>
+</body>
+</html>
