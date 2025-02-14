@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+</head>
+<body>
+    <script>
+        const scalerData = tf.scalar(10).print();
+
+        const vectorData = tf.tensor1d([1,2,3,4]).print();
+
+        const matrixData2d = tf.tensor2d([
+            [1,2,3],
+            [2,4,6]
+        ]).print();
+
+        const matrixData3d = tf.tensor3d([
+            [
+                [1,2,3],
+                [4,7,9]
+            ],
+            [
+                [1,2,3],
+                [4,7,9]
+            ]
+        ]).print();
+
+        const matrixData4d = tf.tensor4d([
+            [
+                [
+                    [1,2,3,4],
+                    [2,7,0,1]
+                ]
+            ],
+            [
+                [
+                    [1,2,3,4],
+                    [2,7,0,1]
+                ]
+            ],
+        ])
+
+        console.log(matrixData4d.shape);
+        
+        const zeroData = tf.zeros([2,3]).print();
+
+        const onesData = tf.ones([4,8]).print();
+
+        const fillData = tf.fill([2,5], 4).print();
+
+        const randomNormalData = tf.randomNormal([3,2], 0,2).print();
+
+        const randomUniformData = tf.randomUniform([2,2], 1,4).print();
+
+        const dataA = tf.tensor([[2,3],[3,9]]);
+        const dataB = tf.tensor([[1,2],[0,1]]);
+        const dataC = tf.tensor([[4,1],[2,1]]);
+        const dataD = tf.tensor([[40,10],[12,11]]);
+
+        tf.add(dataA, dataB).print();
+        tf.sub(dataA, dataB).print();
+        tf.mul(dataA, dataB).print();
+        tf.div(dataA, dataB).print();
+        tf.matMul(dataA, dataB).print();
+
+        tf.transpose(dataB).print();
+        tf.sqrt(dataB).print();
+        const expoData = tf.exp(dataB);
+        tf.log(expoData).print();
+        // tf.abs(dataC).print();
+        tf.pow(dataC, 2).print();
+        tf.sum(dataD).print();
+        tf.mean(dataD).print();
+        tf.min(dataD).print();
+        tf.max(dataD).print();
+        tf.argMin(dataD).print();
+        tf.argMax(dataD).print();
+        
+    </script>
+</body>
+</html>
