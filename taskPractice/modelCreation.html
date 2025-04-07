@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uniform Distribution Visualization</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<canvas id="uniformChart"></canvas>
+
+<script>
+    async function plotUniformDistribution() {
+        // Generate 1000 random numbers between 0 and 1
+        const numSamples = 1000;
+        const randomTensor = tf.randomUniform([numSamples], 0, 1);
+        const randomValues = await randomTensor.array();
+
+        // Create histogram bins
+        const numBins = 20;
+        const binSize = 1 / numBins;
+        let bins = new Array(numBins).fill(0);
+
+        randomValues.forEach(value => {
+            let index = Math.floor(value / binSize);
+            bins[index]++;
+        });
+
+        // Create labels for bins
+        let labels = [];
+        for (let i = 0; i < numBins; i++) {
+            labels.push((i * binSize).toFixed(2) + "-" + ((i + 1) * binSize).toFixed(2));
+        }
+
+        // Plot using Chart.js
+        const ctx = document.getElementById('uniformChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Frequency',
+                    data: bins,
+                    backgroundColor: 'blue'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    }
+
+    plotUniformDistribution();
+</script>
+
+</body>
+</html>

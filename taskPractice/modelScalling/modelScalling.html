@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Train a Model With & Without Scaling</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+</head>
+<body>
+    <h2>Training Model With & Without Scaling</h2>
+    <button onclick="trainModel()">Train Model</button>
+    <pre id="output"></pre>
+
+    <script>
+        async function trainModel() {
+            document.getElementById("output").innerText = "Training Started...";
+
+            // 🔹 Step 1: Generate Synthetic Data (Height, Weight)
+            const numSamples = 100;
+            let heights = tf.randomUniform([numSamples], 150, 200); // Heights (150cm to 200cm)
+            let weights = heights.mul(0.5).add(tf.randomNormal([numSamples], 0, 5)); // Weights (approx height * 0.5)
+
+            // 🔹 Step 2: Prepare Data (Train without scaling, with Min-Max & Z-score scaling)
+            let X_noScaling = heights.clone();
+            let X_minMax = minMaxScale(heights);
+            let X_zScore = zScoreScale(heights);
+            let Y = weights.clone();
+
+            // 🔹 Step 3: Train Three Models
+            let results = await Promise.all([
+                trainDenseModel(X_noScaling, Y, "No Scaling"),
+                trainDenseModel(X_minMax, Y, "Min-Max Scaling"),
+                trainDenseModel(X_zScore, Y, "Z-score Standardization")
+            ]);
+
+            // 🔹 Step 4: Display Results
+            document.getElementById("output").innerText = results.join("\n\n");
+        }
+
+        // 🔹 Min-Max Scaling: (X - min) / (max - min)
+        function minMaxScale(tensor) {
+            const min = tensor.min();
+            const max = tensor.max();
+            return tensor.sub(min).div(max.sub(min));
+        }
+
+        // 🔹 Z-score Standardization: (X - mean) / std
+        function zScoreScale(tensor) {
+            const mean = tensor.mean();
+            const std = tensor.sub(mean).square().mean().sqrt();
+            return tensor.sub(mean).div(std);
+        }
+
+        // 🔹 Function to Train a Simple Dense Model
+        async function trainDenseModel(X, Y, label) {
+            const model = tf.sequential();
+            model.add(tf.layers.dense({ units: 1, inputShape: [1] }));
+
+            model.compile({
+                optimizer: tf.train.sgd(0.01),
+                loss: "meanSquaredError"
+            });
+
+            const history = await model.fit(X.reshape([X.size, 1]), Y.reshape([Y.size, 1]), {
+                epochs: 100,
+                verbose: 0
+            });
+
+            // 🔹 Get Final Loss
+            const finalLoss = history.history.loss[history.history.loss.length - 1];
+            return `${label} -> Final Loss: ${finalLoss.toFixed(4)}`;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TensorFlow.js MobileNet</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script defer src="script.js"></script>
+</head>
+<body>
+    <h1>TensorFlow.js Image Classification</h1>
+    <img id="image" src="images.jpeg" alt="Sample Image">
+    <p id="result">Prediction: </p>
+
+    <script>
+        const imgElement = document.getElementById("image")
+let tensor = tf.browser.fromPixels(imgElement)
+tensor.print();
+
+    </script>
+</body>
+</html>

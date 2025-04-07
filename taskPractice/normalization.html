@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    
+</head>
+<body>
+    
+<h2>Grayscale Image Normalization</h2>
+<input type="file" id="imageInput" accept="image/*">
+<canvas id="canvas"></canvas>
+<pre id="output"></pre>
+    <script>
+
+
+    //   Task 1
+            // const data =   tf.tensor([10, 20, 30, 40, 50]);
+            // const minData = tf.min(data);
+            // const maxData = tf.max(data);
+
+            // const finalScaling = data.sub(minData).div(maxData.sub(minData));
+            // finalScaling.print();
+
+            // const { mean, variance } = tf.moments(data);
+            // const stdDeviation = tf.sqrt(variance);
+            // const deviationScaling = data.sub(mean).div(stdDeviation)
+            // deviationScaling.print();
+
+    //   Task 2
+
+// const data2 = tf.tensor([
+//   [100, 200, 300],
+//   [400, 500, 600],
+//   [700, 800, 900]
+// ]);
+// // Row wise min-max scaling
+// const data2minData = data2.min(1, true);
+// const data2maxData = data2.max(1, true);
+
+// const rowWiseScaling = data2.sub(data2minData).div(data2maxData.sub(data2minData));
+// rowWiseScaling.print();
+
+// // Column wise min-max scaling
+// const data2ColumnMinData = data2.min(0, true);
+// const data2ColumnMaxData = data2.max(0, true);
+
+// const finalColumnDataScaling = data2.sub(data2ColumnMinData).div(data2ColumnMaxData.sub(data2ColumnMinData));
+// finalColumnDataScaling.print();
+
+
+// // Row wise z score normalization
+// const { mean, variance } = tf.moments(data2, 1 , true);
+// const rootVarience = tf.sqrt(variance);
+// const data2RowResult = data2.sub(mean).div(rootVarience);
+
+
+
+// data2RowResult.print();
+
+// // Column wise z score normalization
+// const meanNewRow = data2.mean(0, true);
+// const scalResulting = data2.sub(meanNewRow).pow(2).mean(0, true).sqrt();
+// const columnResult = data2.sub(meanNewRow).div(scalResulting);
+
+// columnResult.print();
+
+
+// Task 3
+        //     document.getElementById('imageInput').addEventListener('change', async function(event) {
+        //     const file = event.target.files[0];
+        //     if (!file) return;
+
+        //     // Load the image
+        //         const img = new Image();
+        //         img.src = URL.createObjectURL(file);
+        //         img.onload = async function() {
+        //         const canvas = document.getElementById('canvas');
+        //         const ctx = canvas.getContext('2d');
+                
+        //         // Set canvas size
+        //         canvas.width = img.width;
+        //         canvas.height = img.height;
+        //         ctx.drawImage(img, 0, 0, img.width, img.height);
+
+        //         // Get image data as tensor
+        //         const imageData = ctx.getImageData(0, 0, img.width, img.height);
+        //         let tensor = tf.browser.fromPixels(imageData, 1); // Convert to grayscale tensor
+
+        //         // Convert shape [H, W, 1] -> [H, W]
+        //         tensor = tensor.squeeze();
+
+        //         // Normalize to [0,1]
+        //         const normalized_0_1 = tensor.div(255);
+
+        //         // Normalize to [-1,1]
+        //         const normalized_neg1_1 = tensor.div(127.5).sub(1);
+
+        //         // Print values
+        //         document.getElementById('output').innerText = `
+        //             Original (First 5 Pixels): ${tensor.slice([0, 0], [1, 5]).arraySync()}
+        //             Normalized [0,1] (First 5 Pixels): ${normalized_0_1.slice([0, 0], [1, 5]).arraySync()}
+        //             Normalized [-1,1] (First 5 Pixels): ${normalized_neg1_1.slice([0, 0], [1, 5]).arraySync()}`;
+
+        //         // Dispose tensors
+        //         tensor.dispose();
+        //         normalized_0_1.dispose();
+        //         normalized_neg1_1.dispose();
+        //     };
+        // });
+
+// Task 4
+        
+
+</script>
+
+</body>
+</html>

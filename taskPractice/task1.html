@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+</head>
+<body>
+    <script>
+        // Task 1
+        // const tensor1data = tf.tensor1d([2, 4, 6, 8, 10])
+        // tensor1data.mul(2).print();
+        // const newTensor = tensor1data.mul(2);
+        // newTensor.sum().print();
+        // newTensor.mean().print();
+
+        // Task 2
+        // const tensorData = tf.tensor1d([1, 2, 3, 4, 5, 6]);
+        // const reshaped = tensorData.reshape([2,3]);
+        // tensorData.reshape([2,3]).print();
+
+        // const tensor2dData = tf.tensor2d([[10, 20, 30], [40, 50, 60]])
+        // tensor2dData.print();
+        // reshaped.add(tensor2dData).print();
+        // reshaped.mul(tensor2dData).print();
+
+        // Task 3
+        // const normalizeData = tf.tensor1d([5, 10, 15, 20, 25]);
+        // const minData = normalizeData.min();
+        // const maxData = normalizeData.max();
+        // const normalizedNewData = normalizeData.sub(minData).div(maxData.sub(minData));
+        // normalizedNewData.print();
+
+        // const meanData = normalizeData.mean();
+        // const deviationData = normalizeData.sub(meanData).pow(2).mean().sqrt();
+
+        // const scalingData = normalizeData.sub(meanData).div(deviationData)
+        // scalingData.print();
+
+        // task 4
+        // const tensorData = tf.tensor1d([2.0, 1.0, 0.1]);
+        // tensorData.print();
+        // tf.softmax(tensorData).print();
+
+
+        // Task 5
+        const tensorData3d = tf.tensor([[2, 1, 0.1],  
+ [1, 3, 0.5],  
+ [2.5, 0.3, 2]]);
+
+ const expData = tf.exp(tensorData3d)
+const sumExpData = expData.sum(1, true);
+const softMaxData = expData.div(sumExpData);
+
+tensorData3d.print();
+softMaxData.print();
+
+// const identity = tf.eye(3);  // 3x3 Identity matrix
+// const diagTensor = tf.tensor1d([1, 2, 3]).diag();  // Creates a diagonal matrix
+
+// identity.print();
+// diagTensor.print();
+
+// const randNorm = tf.randomNormal([3, 3]);  // Mean=0, StdDev=1
+// const randUni = tf.randomUniform([3, 3], 0, 10);  // Range [0,10]
+
+// randNorm.print();
+// randUni.print();
+
+// const refTensor = tf.tensor([[1, 2, 3], [4, 5, 6]]);
+// const zerosLike = tf.zerosLike(refTensor);
+// const onesLike = tf.onesLike(refTensor);
+
+// zerosLike.print();
+// onesLike.print();
+
+    </script>
+</body>
+</html>

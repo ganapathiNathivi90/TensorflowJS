@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+</head>
+<body>
+    <script>
+        const model = tf.sequential();
+        model.add(tf.layers.dense({units:1, inputShape:[1] }));
+
+        model.compile({
+            loss: "meanSquaredError",
+            optimizer: "sgd",
+        })
+
+        const xs = tf.tensor([1,2,3,4,5], [5,1]);
+        const ys = tf.tensor([2,4,6,8,10], [5,1]);
+        
+        async function trainModel(xs, ys) {
+            console.log("loading...");
+
+            await model.fit(xs, ys, {epochs: 200});
+
+            console.log("completed");
+
+            const prediction = model.predict(tf.tensor2d([[7] , [1,1]]));
+            prediction.print();
+        }
+
+        trainModel(xs , ys);
+    </script>
+</body>
+</html>
