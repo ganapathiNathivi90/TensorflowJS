@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+</head>
+<body>
+    <script>
+        const tensor = tf.tensor([1,2,3,4]);
+        tensor.print();
+
+
+        scaler = tf.scalar(10).print();
+        tensor1d = tf.tensor1d([10, 11, 12]).print();
+        tensor2d = tf.tensor2d([
+            [10, 11, 12], 
+            [10, 11, 12]
+        ]);
+        // tensor2d = tf.tensor2d([[10, 11, 12], [10, 11, 12]]).print();
+        tensor3d = tf.tensor3d([
+            [
+                [10, 11, 12], 
+                [10, 11, 12]
+            ], 
+            [
+                [10, 11, 12], 
+                [10, 11, 12]
+            ],
+            [
+                [10, 11, 12], 
+                [10, 11, 12]
+            ],
+
+        ]).print();
+        
+        tensor4d = tf.tensor4d([
+            [[
+                [10, 11, 12], 
+                [10, 11, 12]
+            ], 
+            [
+                [10, 11, 12], 
+                [10, 11, 12]
+            ],
+            [
+                [10, 11, 12], 
+                [10, 11, 12]
+            ],],
+            [[
+                [10, 11, 12], 
+                [10, 11, 12]
+            ], 
+            [
+                [10, 11, 12], 
+                [10, 11, 12]
+            ],
+            [
+                [10, 11, 12], 
+                [10, 11, 12]
+            ],]
+
+        ]);
+        console.log(tensor4d.shape);
+        
+        // Transpose
+        tensor2d.transpose().print();
+        // reshape
+        tensor2d.reshape([3,2]).print();
+        // immutable to mutable using variable
+        tensorData = tf.tensor([2,4,5]);
+
+        varibleData = tf.variable(tensorData);
+        varibleData.assign(tf.tensor([4,4,4]));
+        varibleData.print();
+
+        // Reshape, expandDime and squeeze
+
+        tensorNew2 = tf.tensor([2,4,6,8,10,12, 14, 16]);
+        tensorNew2.reshape([4,2]).print();
+
+        expandDataVal = tf.expandDims(tensorNew2, 1);
+
+        tf.squeeze(expandDataVal, 1).print();
+
+        // ones, zeros and randomUnifor
+        tf.ones([2,3]).print();
+        tf.zeros([2,3]).print();
+        tf.randomUniform([2,3], 10).print();
+
+
+
+        aData = tf.tensor([
+            [1,2, 3],
+            [2,3, 4]
+        ]);
+
+        bData = tf.tensor([
+            [1,2],
+            [2,3],
+            [2,2]
+        ]);
+
+        const multiplyData = aData.matMul(bData);
+
+        cData = tf.tensor([
+            [1,2,3],
+            [1,2,3]
+        ])
+
+        // A + B * C
+
+       const newDATA = multiplyData.matMul(cData);
+       newDATA.slice([0, 1], [2,2]).print();
+
+
+        // Broadcasting
+        
+        tf.tensor1d([2,4,5]).add(tf.scalar(10)).print();
+    </script>
+    
+</body>
+</html>

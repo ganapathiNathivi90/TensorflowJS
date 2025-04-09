@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0"></script>
+
+</head>
+
+<body>
+    <input type="file" id="imageUpload" accept="image/*" />
+    <br /><br />
+    <img id="uploadedImage" width="300" />
+    <p id="prediction"></p>
+
+    <script>
+        // const inputVal = document.getElementById("imageUpload");
+        const imgVal = document.getElementById("uploadedImage");
+        const predictionVal = document.getElementById("prediction");
+
+        // function uploadImgFile(e) {
+        let model;
+
+        // Load the model
+        async function loadModel() {
+            model = await mobilenet.load();
+            console.log('MobileNet model loaded!');
+        }
+
+        loadModel();
+        document.getElementById('imageUpload').addEventListener('change', async (event) => {
+
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                imgVal.src = e.target.result;
+                imgVal.onload = async () => {
+                    const predictions = await model.classify(imgVal);
+                    predictionVal.innerText = predictions.map(p =>
+                        `${p.className} (${(p.probability * 100).toFixed(2)}%)`
+                    ).join('\n');
+                };
+            };
+            reader.readAsDataURL(file);
+
+        })
+    </script>
+</body>
+
+
+
+</html>

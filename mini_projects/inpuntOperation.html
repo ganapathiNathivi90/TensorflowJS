@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+
+</head>
+
+<body>
+
+    <p>Inputs</p>
+    <input type="text" name="inputValue1" id="inputValue1">
+    <input type="text" name="inputValue2" id="inputValue2">
+
+    <p>Secont Inputs</p>
+    <input type="text" name="secontInputValue1" id="secontInputvalue1">
+    <input type="text" name="secontInputValue2" id="secontInputvalue2">
+    <button onclick="operation();">+</button>
+    <div>
+        result plus: <span id="result1"></span>
+    </div>
+    result multiply: <span id="result2"></span>
+
+
+    <script>
+        function operation() {
+
+            const inputValue1 = document.getElementById("inputValue1").value;
+            const inputValue2 = document.getElementById("inputValue2").value;
+
+            const secontInput1 = document.getElementById("secontInputvalue1").value;
+            const secontInput2 = document.getElementById("secontInputvalue2").value;
+
+            let arr1 = inputValue1.split(',').map(Number)
+            let arr2 = secontInput1.split(',').map(Number)
+            let arr3 = inputValue2.split(',').map(Number)
+            let arr4 = secontInput2.split(',').map(Number)
+
+            try {
+                tf.tidy(() => {
+
+                    tensor1 = tf.tensor1d(arr1);
+                    tensor2 = tf.tensor1d(arr2);
+
+                    const result1 = tensor1.add(tensor2);
+                    const result2 = tensor1.mul(tensor2);
+
+                    document.getElementById("result1").innerHTML = result1.dataSync();
+                    document.getElementById("result2").innerHTML = result2.dataSync();
+                    result1.shape;
+                    result2.shape;
+                })
+            } catch (error) {
+                console.log(error.message);
+            }
+
+        }
+
+    </script>
+</body>
+
+</html>
