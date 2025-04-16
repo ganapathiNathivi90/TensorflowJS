@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Webcam Classifier</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis"></script>
+
+</head>
+
+<body>
+    <script>
+        async function run() {
+      // 1. Create synthetic training data (X → Y pairs)
+      const xs = tf.tensor([1, 2, 3, 4]);
+      const ys = tf.tensor([1.5, 3.0, 4.5, 6.0]);
+
+      // 2. Build a simple model
+      const model = tf.sequential();
+      model.add(tf.layers.dense({ inputShape: [1], units: 1 }));
+      model.compile({
+        optimizer: 'sgd',
+        loss: 'meanSquaredError'
+      });
+
+      // 3. Train the model and show loss chart
+      await model.fit(xs, ys, {
+        epochs: 100,
+        callbacks: tfvis.show.fitCallbacks(
+          { name: 'Training Performance', tab: 'Charts' },
+          ['loss'],
+          { height: 200, callbacks: ['onEpochEnd'] }
+        )
+      });
+
+      // 4. Make prediction after training
+      const prediction = model.predict(tf.tensor([5]));
+      prediction.print(); // should be close to 7.5
+    }
+
+    run();
+
+    </script>
+
+</body>
+
+</html>

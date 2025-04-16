@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Teachable Machine Webcam Classifier</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+</head>
+<body>
+  <h2>📷 Live Prediction</h2>
+  <video id="webcam" autoplay playsinline width="224" height="224"></video>
+  <p id="output">Loading...</p>
+
+  <script>
+    const video = document.getElementById('webcam');
+    const output = document.getElementById('output');
+
+    let model;
+
+    async function setupWebcam() {
+      return new Promise((resolve, reject) => {
+        navigator.mediaDevices.getUserMedia({ video: true })
+          .then(stream => {
+            video.srcObject = stream;
+            video.addEventListener('loadeddata', resolve, false);
+          })
+          .catch(reject);
+      });
+    }
+
+    async function loadModel() {
+      model = await tf.loadLayersModel('./model.json'); // adjust path if needed
+    }
+
+    function getInputTensor() {
+    // Convert webcam frame to tensor
+      const tensor = tf.browser.fromPixels(video)
+        .resizeNearestNeighbor([224, 224]) // Match model input
+        .toFloat()
+        .div(tf.scalar(255))               // Normalize 0-1
+        .expandDims();                     // Add batch dimension: [1, 224, 224, 3]
+      return tensor;
+    }
+
+    async function predictLoop() {
+      while (true) {
+        tf.engine().startScope(); // Auto-cleanup memory
+        const inputTensor = getInputTensor();
+        const prediction = model.predict(inputTensor);
+        const result = await prediction.data();
+
+        // Show result — assumes 2 classes
+        const classIndex = result.indexOf(Math.max(...result));
+        output.innerText = `Prediction: Class ${classIndex} (${(result[classIndex] * 100).toFixed(1)}%)`;
+
+        tf.engine().endScope();
+        await tf.nextFrame(); // Wait till next animation frame
+      }
+    }
+
+    async function run() {
+      await setupWebcam();
+      await loadModel();
+      predictLoop();
+    }
+
+    run();
+  </script>
+</body>
+</html>

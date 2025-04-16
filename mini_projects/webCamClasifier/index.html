@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Webcam Classifier</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+  <style>
+    video, canvas {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+    #label {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>📷 Live Webcam Classifier</h2>
+  <video id="webcam" width="224" height="224" autoplay muted controls></video>
+  <canvas id="canvas" width="224" height="224" style="display:none;"></canvas>
+  <div id="label">Loading model...</div>
+
+  <script>
+    const video = document.getElementById('webcam');
+    const canvas = document.getElementById('canvas');
+    const label = document.getElementById('label');
+    const ctx = canvas.getContext('2d');
+
+    let model;
+
+    // Load MobileNet model
+    async function loadModel() {
+      model = await mobilenet.load();
+      label.innerText = 'Model loaded! Starting webcam...';
+      startWebcam();
+    }
+
+    // Start webcam feed
+    async function startWebcam() {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      video.srcObject = stream;
+
+      video.addEventListener('loadeddata', () => {
+        label.innerText = 'Webcam ready. Predicting...';
+        predictLoop(); // Start prediction loop
+      });
+    }
+
+    // Predict frame-by-frame
+    async function predictLoop() {
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const imageTensor = tf.browser.fromPixels(canvas);
+      const predictions = await model.classify(imageTensor);
+      label.innerText = `${predictions[0].className} (${(predictions[0].probability * 100).toFixed(1)}%)`;
+      imageTensor.dispose(); // Clean up memory
+
+      requestAnimationFrame(predictLoop); // Repeat
+    }
+
+    loadModel();
+  </script>
+
+</body>
+</html>
