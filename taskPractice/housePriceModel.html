@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TFJS Stable Prediction Test</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0"></script>
+</head>
+<body>
+  <script>
+    async function runModel() {
+      const xsRaw = tf.tensor2d([
+        [1000, 2],
+        [1500, 3],
+        [2000, 4],
+        [2500, 4],
+        [3000, 5],
+      ]);
+      const ysRaw = tf.tensor1d([200, 300, 400, 450, 500]);
+
+      const xsMin = xsRaw.min(0);
+      const xsMax = xsRaw.max(0);
+      const xsNormalized = xsRaw.sub(xsMin).div(xsMax.sub(xsMin));
+
+      const ysMin = ysRaw.min();
+      const ysMax = ysRaw.max();
+      const ysNormalized = ysRaw.sub(ysMin).div(ysMax.sub(ysMin));
+
+      const model = tf.sequential();
+      model.add(tf.layers.dense({ units: 16, activation: 'relu', inputShape: [2] }));
+      model.add(tf.layers.dense({ units: 8, activation: 'relu' }));
+      model.add(tf.layers.dense({ units: 4, activation: 'relu' }));
+      model.add(tf.layers.dense({ units: 2, activation: 'relu' }));
+      model.add(tf.layers.dense({ units: 1 }));
+
+      model.compile({
+        loss: 'meanSquaredError',
+        optimizer: tf.train.adam(0.01),
+      });
+
+      let bestLoss = Number.POSITIVE_INFINITY;
+
+      console.log("Training in chunks...");
+      for (let i = 0; i < 5; i++) { // Max 5 chunks (5000 epochs max)
+        const history = await model.fit(xsNormalized, ysNormalized, {
+          epochs: 1000,
+          shuffle: true,
+          callbacks: {
+            onEpochEnd: async (epoch, logs) => {
+              const currentLoss = logs.loss;
+              const displayEpoch = i * 1000 + epoch;
+              console.log(`Epoch ${displayEpoch}, Loss: ${currentLoss.toFixed(5)}`);
+
+              // Stop training early if loss is extremely low
+              if (currentLoss < 0.00001) {
+                console.log("🔁 Early stopping: Loss is near zero.");
+                i = 9999; // break outer loop
+              }
+
+              await tf.nextFrame(); // Keeps UI responsive
+            }
+          }
+        });
+
+        const lastLoss = history.history.loss.slice(-1)[0];
+        if (lastLoss < bestLoss) {
+          bestLoss = lastLoss;
+          await model.save('localstorage://house-price-model');
+          console.log(`✅ Model improved and saved with loss: ${bestLoss.toFixed(5)}`);
+        }
+      }
+
+      // 🔍 Load best saved model
+      const bestModel = await tf.loadLayersModel('localstorage://house-price-model');
+
+      // 🔍 Test predictions
+      const testCases = [
+        [2200, 3],  // Expect ~370
+        [3500, 6],  // Expect >500
+        [1000, 2],  // Should be ~200
+        [3000, 5],  // Should be ~500
+        [3500, 6],  // Should be ~500
+      ];
+
+      for (const test of testCases) {
+        const input = tf.tensor2d([test]);
+        const normalized = input.sub(xsMin).div(xsMax.sub(xsMin));
+        const prediction = bestModel.predict(normalized);
+        const predData = await prediction.data();
+        const denorm = predData[0] * (ysMax.arraySync() - ysMin.arraySync()) + ysMin.arraySync();
+        console.log(`📊 Input: [${test}], Predicted Price: $${denorm.toFixed(2)}k`);
+      }
+    }
+
+    runModel();
+  </script>
+</body>
+</html>

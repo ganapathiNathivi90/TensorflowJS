@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pose Estimation Game</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.13.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>
+  <style>
+    canvas, video {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    #feedback {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 24px;
+      color: white;
+      background: rgba(0,0,0,0.5);
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <video id="video" width="640" height="480" autoplay muted playsinline></video>
+  <canvas id="canvas" width="640" height="480"></canvas>
+  <div id="feedback">Loading...</div>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const feedback = document.getElementById('feedback');
+
+    let detector;
+
+    async function setupCamera() {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      video.srcObject = stream;
+      return new Promise(resolve => {
+        video.onloadedmetadata = () => resolve(video);
+      });
+    }
+
+    async function loadModel() {
+      detector = await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet);
+    }
+
+    function drawKeypoints(keypoints) {
+      keypoints.forEach(kp => {
+        if (kp.score > 0.4) {
+          ctx.beginPath();
+          ctx.arc(kp.x, kp.y, 5, 0, 2 * Math.PI);
+          ctx.fillStyle = 'aqua';
+          ctx.fill();
+        }
+      });
+    }
+
+    function drawSkeleton(keypoints) {
+      const pairs = [
+        [5, 7], [7, 9], [6, 8], [8, 10], // arms
+        [5, 6], [5, 11], [6, 12],         // shoulders to hips
+        [11, 13], [13, 15], [12, 14], [14, 16] // legs
+      ];
+      ctx.strokeStyle = 'lime';
+      ctx.lineWidth = 2;
+      pairs.forEach(([i, j]) => {
+        if (keypoints[i].score > 0.4 && keypoints[j].score > 0.4) {
+          ctx.beginPath();
+          ctx.moveTo(keypoints[i].x, keypoints[i].y);
+          ctx.lineTo(keypoints[j].x, keypoints[j].y);
+          ctx.stroke();
+        }
+      });
+    }
+
+    function isPoseCloseToReference(pose) {
+      const leftWrist = pose[9];
+      const leftShoulder = pose[5];
+      if (leftWrist.score > 0.5 && leftShoulder.score > 0.5) {
+        const deltaY = Math.abs(leftWrist.y - leftShoulder.y);
+        return deltaY < 50; // close if wrist is near shoulder level
+      }
+      return false;
+    }
+
+    async function detectPose() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const poses = await detector.estimatePoses(video);
+      if (poses.length > 0) {
+        const keypoints = poses[0].keypoints;
+        drawKeypoints(keypoints);
+        drawSkeleton(keypoints);
+
+        const isMatch = isPoseCloseToReference(keypoints);
+        feedback.textContent = isMatch ? '✅ Great Pose!' : '🙅‍♂️ Try Again';
+      }
+      requestAnimationFrame(detectPose);
+    }
+
+    async function main() {
+      await setupCamera();
+      await loadModel();
+      detectPose();
+    }
+
+    main();
+  </script>
+</body>
+</html>

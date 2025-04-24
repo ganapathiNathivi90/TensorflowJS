@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>TFJS Height-Weight Predictor</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0"></script>
+</head>
+
+<body>
+    <h2>Check console for output</h2>
+    <script>
+        async function run() {
+            const rawXs = [150, 160, 170, 180, 190];
+            const rawYs = [50, 60, 70, 80, 90];
+
+            const xMin = Math.min(...rawXs);
+            const xMax = Math.max(...rawXs);
+            const yMin = Math.min(...rawYs);
+            const yMax = Math.max(...rawYs);
+
+            const xs = tf.tensor2d(rawXs.map(x => [(x - xMin) / (xMax - xMin)]));
+            const ys = tf.tensor2d(rawYs.map(y => [(y - yMin) / (yMax - yMin)]));
+
+            const model = tf.sequential();
+            model.add(tf.layers.dense({ units: 1, inputShape: [1] }));
+            model.compile({
+                loss: 'meanSquaredError',
+                optimizer: tf.train.adam(0.01)
+            });
+
+            await model.fit(xs, ys, {
+                epochs: 250,
+            });
+
+            // Predict for height = 175
+            const testHeight = 175;
+            const normalizedInput = (testHeight - xMin) / (xMax - xMin);
+            const pred = model.predict(tf.tensor2d([[normalizedInput]]));
+            const data = await pred.data();
+            const denormalized = data[0] * (yMax - yMin) + yMin;
+            console.log("Rounded:", Math.round(denormalized));
+        }
+
+        run();
+
+
+        
+    </script>
+</body>
+
+</html>
